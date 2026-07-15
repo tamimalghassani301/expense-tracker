@@ -34,13 +34,14 @@
   .form-group label { font-size: 11px; color: #888; margin-bottom: 4px; }
   .form-group input, .form-group select { padding: 10px 12px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 14px; outline: none; font-family: inherit; }
   .form-group input:focus, .form-group select:focus { border-color: #3b82f6; }
-  .btn { padding: 10px 20px; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn { padding: 10px 20px; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
   .btn:hover { background: #2d2d4a; }
   .btn:active { transform: scale(0.96); }
   .btn-danger { background: #fee2e2; color: #dc2626; }
   .btn-success { background: #10b981; }
   .btn-red { background: #ef4444; }
   .btn-purple { background: #6366f1; }
+  .btn-invoice { background: #f59e0b; color: white; font-size: 12px; padding: 6px 12px; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
   th, td { padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6; }
@@ -52,10 +53,56 @@
   .cat-bar-bg { background: #f3f4f6; border-radius: 6px; height: 8px; overflow: hidden; }
   .cat-bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
   .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #aaa; }
+
+  /* Modal Styles */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal-content { background: white; border-radius: 16px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; }
+  .modal-close { position: absolute; top: 16px; left: 16px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #666; }
+  .modal-close:hover { background: #e5e7eb; }
+
+  /* Invoice Styles */
+  .invoice-box { background: white; padding: 24px; border-radius: 12px; border: 2px solid #e5e7eb; }
+  .invoice-header { text-align: center; border-bottom: 3px solid #1a1a2e; padding-bottom: 16px; margin-bottom: 20px; }
+  .invoice-header h2 { color: #1a1a2e; font-size: 24px; margin-bottom: 4px; }
+  .invoice-header p { color: #666; font-size: 13px; }
+  .invoice-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e5e7eb; }
+  .invoice-row:last-child { border-bottom: 2px solid #1a1a2e; }
+  .invoice-label { color: #666; font-size: 13px; }
+  .invoice-value { font-weight: 700; font-size: 14px; color: #2d2d2d; }
+  .invoice-total { background: #f9fafb; padding: 16px; border-radius: 10px; margin-top: 16px; text-align: center; }
+  .invoice-total .amount { font-size: 28px; font-weight: 700; color: #1a1a2e; }
+  .invoice-footer { text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 12px; }
+  .stamp { display: inline-block; border: 3px solid #10b981; color: #10b981; padding: 8px 24px; border-radius: 8px; font-weight: 700; font-size: 16px; margin-top: 12px; transform: rotate(-5deg); }
+
+  /* Report Styles */
+  .report-box { background: white; padding: 24px; border-radius: 12px; }
+  .report-header { text-align: center; border-bottom: 3px solid #1a1a2e; padding-bottom: 16px; margin-bottom: 20px; }
+  .report-header h2 { color: #1a1a2e; font-size: 22px; }
+  .report-header p { color: #666; font-size: 12px; margin-top: 4px; }
+  .report-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .report-summary-item { background: #f9fafb; padding: 12px; border-radius: 10px; text-align: center; }
+  .report-summary-item .label { font-size: 11px; color: #888; }
+  .report-summary-item .value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+  .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  .report-table th, .report-table td { padding: 8px; text-align: right; border: 1px solid #e5e7eb; }
+  .report-table th { background: #1a1a2e; color: white; }
+  .report-table tr:nth-child(even) { background: #f9fafb; }
+
+  /* Print Styles */
+  @media print {
+    body { background: white; padding: 0; }
+    .container, .modal-overlay { display: none !important; }
+    .print-only { display: block !important; }
+    .no-print { display: none !important; }
+  }
+  .print-only { display: none; }
 </style>
 </head>
 <body>
-<div class="container">
+
+<!-- Main App -->
+<div class="container" id="mainApp">
   <div class="header">
     <small>📊 نظام إدارة التكاليف المهنية</small>
     <h1>لوحة تحكم التكاليف الذكية</h1>
@@ -120,10 +167,13 @@
   <div class="card" style="overflow-x:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <h3>📋 سجل المصروفات</h3>
-      <button class="btn btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-purple" style="font-size:12px;padding:6px 14px;" onclick="openReportModal()">📄 تقرير كامل</button>
+        <button class="btn btn-danger" style="font-size:12px;padding:6px 14px;" onclick="clearAll()">🗑️ مسح الكل</button>
+      </div>
     </div>
     <table>
-      <thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الفئة</th><th>المستفيد</th><th>ملاحظات</th><th style="text-align:center">🗑️</th></tr></thead>
+      <thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الفئة</th><th>المستفيد</th><th>ملاحظات</th><th style="text-align:center">🧾</th><th style="text-align:center">🗑️</th></tr></thead>
       <tbody id="expensesTableBody"></tbody>
     </table>
     <div class="empty" id="emptyState">📝 لا توجد مصروفات مسجلة بعد.</div>
@@ -136,25 +186,53 @@
 
   <div class="actions">
     <button class="btn btn-success" onclick="exportCSV()">📥 تصدير CSV</button>
-    <button class="btn btn-red" onclick="window.print()">📄 تصدير PDF</button>
-    <button class="btn btn-purple" onclick="window.print()">🖨️ طباعة</button>
+    <button class="btn btn-red" onclick="openReportModal()">📄 تقرير كامل PDF</button>
   </div>
 
   <div class="footer">💡 احفظ هذه الصفحة كـ Bookmark لتستخدمها كتطبيق محلي</div>
 </div>
 
+<!-- Invoice Modal -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeInvoiceModal()">×</button>
+    <div id="invoiceContent"></div>
+    <div style="text-align:center;margin-top:20px;" class="no-print">
+      <button class="btn" onclick="printInvoice()">🖨️ طباعة / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal-content" style="max-width:700px;">
+    <button class="modal-close" onclick="closeReportModal()">×</button>
+    <div id="reportContent"></div>
+    <div style="text-align:center;margin-top:20px;" class="no-print">
+      <button class="btn" onclick="printReport()">🖨️ طباعة / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Print Container -->
+<div class="print-only" id="printContainer"></div>
+
 <script>
 let expenses = [];
 let totalBudget = 130000;
+let currentInvoiceId = null;
+
 try {
   const saved = localStorage.getItem('notion_expenses_v1');
   if (saved) expenses = JSON.parse(saved);
   const savedBudget = localStorage.getItem('notion_budget_v1');
   if (savedBudget) { totalBudget = parseFloat(savedBudget); document.getElementById('budgetInput').value = totalBudget; }
 } catch(e){}
+
 function saveData() { localStorage.setItem('notion_expenses_v1', JSON.stringify(expenses)); localStorage.setItem('notion_budget_v1', totalBudget.toString()); }
 function formatMoney(n){ return n.toLocaleString('en-US'); }
 function updateBudget(){ totalBudget = parseFloat(document.getElementById('budgetInput').value)||0; document.getElementById('totalBudget').textContent = formatMoney(totalBudget); saveData(); renderAll(); }
+
 function addExpense(){
   const amount = parseFloat(document.getElementById('expAmount').value);
   const category = document.getElementById('expCategory').value;
@@ -169,6 +247,7 @@ function addExpense(){
 }
 function deleteExpense(id){ expenses = expenses.filter(e=>e.id!==id); saveData(); renderAll(); }
 function clearAll(){ if(confirm('هل أنت متأكد؟')){ expenses=[]; saveData(); renderAll(); } }
+
 function renderAll(){
   const totalSpent = expenses.reduce((s,e)=>s+e.amount,0);
   const remaining = totalBudget - totalSpent;
@@ -182,15 +261,17 @@ function renderAll(){
   bar.style.background = percent>90 ? '#ef4444' : (percent>70?'#fbbf24':'#4ade80');
   document.getElementById('txnCount').textContent = expenses.length;
   document.getElementById('activeCats').textContent = new Set(expenses.map(e=>e.category)).size;
+
   const tbody = document.getElementById('expensesTableBody');
   const empty = document.getElementById('emptyState');
   tbody.innerHTML = '';
   if(expenses.length===0){ empty.style.display='block'; }
   else { empty.style.display='none'; expenses.slice().reverse().forEach((e,idx)=>{
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td style="color:#6b7280">${expenses.length-idx}</td><td>${e.date}</td><td style="font-weight:600;color:#ef4444">﷼ ${formatMoney(e.amount)}</td><td><span class="tag">${e.category}</span></td><td style="font-weight:500">${e.payee}</td><td style="color:#6b7280;font-size:12px">${e.note||'-'}</td><td style="text-align:center"><button class="btn btn-danger" style="padding:4px 10px;font-size:12px" onclick="deleteExpense(${e.id})">🗑️</button></td>`;
+    tr.innerHTML = `<td style="color:#6b7280">${expenses.length-idx}</td><td>${e.date}</td><td style="font-weight:600;color:#ef4444">﷼ ${formatMoney(e.amount)}</td><td><span class="tag">${e.category}</span></td><td style="font-weight:500">${e.payee}</td><td style="color:#6b7280;font-size:12px">${e.note||'-'}</td><td style="text-align:center"><button class="btn btn-invoice" onclick="openInvoiceModal(${e.id})">🧾</button></td><td style="text-align:center"><button class="btn btn-danger" style="padding:4px 10px;font-size:12px" onclick="deleteExpense(${e.id})">🗑️</button></td>`;
     tbody.appendChild(tr);
   });}
+
   const catTotals={}; expenses.forEach(e=>{catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});
   const bd = document.getElementById('categoryBreakdown');
   if(Object.keys(catTotals).length===0){ bd.innerHTML='<div class="empty">لا توجد بيانات كافية</div>'; }
@@ -204,13 +285,108 @@ function renderAll(){
     });
   }
 }
+
+function openInvoiceModal(id) {
+  currentInvoiceId = id;
+  const e = expenses.find(x => x.id === id);
+  if (!e) return;
+  const project = document.getElementById('projectName').value || 'مشروعي الرئيسي';
+  const invoiceNum = 'INV-' + String(expenses.indexOf(e) + 1).padStart(4, '0');
+  document.getElementById('invoiceContent').innerHTML = `
+    <div class="invoice-box" id="invoicePrintBox">
+      <div class="invoice-header">
+        <h2>🧾 فاتورة مصروفات</h2>
+        <p>${project}</p>
+      </div>
+      <div class="invoice-row"><span class="invoice-label">رقم الفاتورة</span><span class="invoice-value">${invoiceNum}</span></div>
+      <div class="invoice-row"><span class="invoice-label">التاريخ</span><span class="invoice-value">${e.date}</span></div>
+      <div class="invoice-row"><span class="invoice-label">المستفيد / الجهة</span><span class="invoice-value">${e.payee}</span></div>
+      <div class="invoice-row"><span class="invoice-label">الفئة</span><span class="invoice-value">${e.category}</span></div>
+      <div class="invoice-row"><span class="invoice-label">ملاحظات</span><span class="invoice-value">${e.note || '-'}</span></div>
+      <div class="invoice-total">
+        <div class="invoice-label">المبلغ الإجمالي</div>
+        <div class="amount">﷼ ${formatMoney(e.amount)}</div>
+        <div class="stamp">✓ مدفوع</div>
+      </div>
+      <div class="invoice-footer">
+        <p>تم إصدار هذه الفاتورة إلكترونياً</p>
+        <p style="margin-top:4px">${new Date().toLocaleDateString('ar-SA')}</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('invoiceModal').classList.add('active');
+}
+
+function closeInvoiceModal() { document.getElementById('invoiceModal').classList.remove('active'); currentInvoiceId = null; }
+
+function printInvoice() {
+  const content = document.getElementById('invoicePrintBox').outerHTML;
+  document.getElementById('printContainer').innerHTML = content;
+  window.print();
+  setTimeout(() => { document.getElementById('printContainer').innerHTML = ''; }, 1000);
+}
+
+function openReportModal() {
+  if (expenses.length === 0) { alert('لا توجد مصروفات لعرض التقرير'); return; }
+  const project = document.getElementById('projectName').value || 'مشروعي الرئيسي';
+  const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
+  const remaining = totalBudget - totalSpent;
+  const catTotals = {};
+  expenses.forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + e.amount; });
+  const catRows = Object.entries(catTotals).sort((a, b) => b[1] - a[1]).map(([cat, amt]) => {
+    const pct = totalSpent > 0 ? (amt / totalSpent * 100).toFixed(1) : 0;
+    return `<tr><td>${cat}</td><td>﷼ ${formatMoney(amt)}</td><td>${pct}%</td></tr>`;
+  }).join('');
+  const txnRows = expenses.slice().reverse().map((e, idx) => {
+    return `<tr><td>${expenses.length - idx}</td><td>${e.date}</td><td>${e.payee}</td><td>${e.category}</td><td>﷼ ${formatMoney(e.amount)}</td><td>${e.note || '-'}</td></tr>`;
+  }).join('');
+
+  document.getElementById('reportContent').innerHTML = `
+    <div class="report-box" id="reportPrintBox">
+      <div class="report-header">
+        <h2>📄 التقرير المالي الكامل</h2>
+        <p>${project} | ${new Date().toLocaleDateString('ar-SA')}</p>
+      </div>
+      <div class="report-summary">
+        <div class="report-summary-item"><div class="label">الميزانية</div><div class="value" style="color:#1a1a2e">﷼ ${formatMoney(totalBudget)}</div></div>
+        <div class="report-summary-item"><div class="label">المصروفات</div><div class="value" style="color:#ef4444">﷼ ${formatMoney(totalSpent)}</div></div>
+        <div class="report-summary-item"><div class="label">المتبقي</div><div class="value" style="color:${remaining < 0 ? '#ef4444' : '#10b981'}">﷼ ${formatMoney(remaining)}</div></div>
+      </div>
+      <h3 style="margin:16px 0 8px;font-size:14px;color:#2d2d2d">📊 توزيع المصروفات</h3>
+      <table class="report-table"><thead><tr><th>الفئة</th><th>المبلغ</th><th>النسبة</th></tr></thead><tbody>${catRows}</tbody></table>
+      <h3 style="margin:20px 0 8px;font-size:14px;color:#2d2d2d">📋 تفاصيل المعاملات</h3>
+      <table class="report-table"><thead><tr><th>#</th><th>التاريخ</th><th>المستفيد</th><th>الفئة</th><th>المبلغ</th><th>ملاحظات</th></tr></thead><tbody>${txnRows}</tbody></table>
+      <div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px">
+        <p>تم إنشاء هذا التقرير إلكترونياً</p>
+        <p style="margin-top:4px">إجمالي المعاملات: ${expenses.length}</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('reportModal').classList.add('active');
+}
+
+function closeReportModal() { document.getElementById('reportModal').classList.remove('active'); }
+
+function printReport() {
+  const content = document.getElementById('reportPrintBox').outerHTML;
+  document.getElementById('printContainer').innerHTML = content;
+  window.print();
+  setTimeout(() => { document.getElementById('printContainer').innerHTML = ''; }, 1000);
+}
+
 function exportCSV(){
   let csv='التاريخ,المبلغ,الفئة,المستفيد,ملاحظات\n';
   expenses.forEach(e=>{csv+=`${e.date},${e.amount},${e.category},${e.payee},${e.note}\n`; });
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='مصروفات_'+(document.getElementById('projectName').value||'مشروعي')+'.csv'; a.click();
 }
+
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&['expAmount','expPayee','expNote'].includes(document.activeElement.id)) addExpense(); });
+
+// Close modal on overlay click
+document.getElementById('invoiceModal').addEventListener('click', function(e) { if(e.target === this) closeInvoiceModal(); });
+document.getElementById('reportModal').addEventListener('click', function(e) { if(e.target === this) closeReportModal(); });
+
 renderAll();
 </script>
 </body>
